@@ -1,0 +1,38 @@
+name: nexus-ctl
+base: core22  # ✅ Keep core22
+version: '1.0'  # Update with your version
+summary: Nexus AI Bot  
+description: |
+  Nexus is a modern Linux automation tool for system updates, network management, and AI integration.
+
+grade: stable  
+confinement: strict  
+
+apps:
+  nexusbot:
+    command: bin/nexus
+    # extensions: [gnome-3-34]  # ✅ Corrected extension for core22
+    plugs:
+      - network
+      - network-bind
+      - desktop
+      - desktop-legacy
+      - x11
+      - wayland
+      - home
+
+parts:
+  nexusbot:
+    plugin: python
+    source: .
+    python-packages:
+      - psutil
+      - pytesseract 
+      - requests
+      - python-dotenv
+      - PyGObject
+    stage-packages:
+      - tesseract-ocr 
+      - libgirepository1.0-dev
+      - gir1.2-gtk-3.0
+      - python3-gi
