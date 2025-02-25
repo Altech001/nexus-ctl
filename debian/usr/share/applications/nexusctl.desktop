@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Nexus Control
+Comment=System Control and Management Tool
+Exec=nexusctl
+Icon=nexusctl
+Terminal=false
+Type=Application
+Categories=Utility;System;
+StartupNotify=true
+X-GNOME-Autostart-enabled=true

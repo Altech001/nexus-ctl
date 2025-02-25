@@ -1,0 +1,14 @@
+[Unit]
+Description=Nexus Control System
+After=network.target
+After=graphical-session.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=/usr/bin/nexusctl
+
+[Install]
+WantedBy=graphical-session.target

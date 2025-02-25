@@ -1,0 +1,32 @@
+Package: nexusctl
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: python3-full (>= 3.10), 
+ python3-venv (>= 3.10),
+ python3-gi,
+ python3-tk,
+ python3-pip,
+ python3-dev,
+ gir1.2-gtk-3.0,
+ gir1.2-appindicator3-0.1,
+ gir1.2-notify-0.7,
+ libnotify-bin,
+ python3-dbus,
+ libdbus-1-dev,
+ libgirepository1.0-dev,
+ python3-xlib,
+ libx11-dev,
+ libxss-dev,
+ libgtk-3-dev,
+ libcairo2-dev,
+ pkg-config,
+ dbus,
+ dbus-x11,
+ build-essential
+Maintainer: Your Name <your.email@example.com>
+Description: Nexus Control System
+ A powerful system control and management tool for Linux.
+ Provides system updates, monitoring, and automation features.
+

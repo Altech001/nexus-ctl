@@ -1,0 +1,66 @@
+#!/bin/bash
+set -e
+
+# Get the actual user who ran sudo
+REAL_USER=$SUDO_USER
+if [ -z "$REAL_USER" ]; then
+    REAL_USER=$(who | awk '{print $1}' | head -n1)
+fi
+
+# Create user-specific directories
+USER_HOME=$(getent passwd $REAL_USER | cut -d: -f6)
+mkdir -p $USER_HOME/.local/share/nexusctl
+chown -R $REAL_USER:$REAL_USER $USER_HOME/.local/share/nexusctl
+
+# Create systemd user directory
+mkdir -p $USER_HOME/.config/systemd/user
+cp /usr/lib/systemd/user/nexusctl.service $USER_HOME/.config/systemd/user/
+chown -R $REAL_USER:$REAL_USER $USER_HOME/.config
+
+# Create virtual environment
+VENV_PATH=/opt/nexusctl/venv
+mkdir -p /opt/nexusctl
+python3 -m venv $VENV_PATH
+
+# Set ownership of virtual environment
+chown -R $REAL_USER:$REAL_USER /opt/nexusctl
+
+# Install Python dependencies as the real user
+sudo -u $REAL_USER $VENV_PATH/bin/pip install \
+  PyQt5 \
+  notify2 \
+  customtkinter \
+  darkdetect \
+  Markdown \
+  markdown2 \
+  pillow \
+  psutil \
+  pycairo \
+  PyGObject \
+  pytesseract \
+  python-dotenv \
+  requests \
+  dbus-python \
+  python-xlib \
+  pyautogui \
+  screeninfo \
+  pynput \
+  pyperclip
+
+# Enable and start the service as the user
+sudo -u $REAL_USER XDG_RUNTIME_DIR=/run/user/$(id -u $REAL_USER) systemctl --user daemon-reload
+sudo -u $REAL_USER XDG_RUNTIME_DIR=/run/user/$(id -u $REAL_USER) systemctl --user enable nexusctl
+sudo -u $REAL_USER XDG_RUNTIME_DIR=/run/user/$(id -u $REAL_USER) systemctl --user start nexusctl
+
+# Update desktop database
+update-desktop-database
+
+# Create autostart entry
+mkdir -p /etc/xdg/autostart
+cp /usr/share/applications/nexusctl.desktop /etc/xdg/autostart/
+
+# Set permissions
+chmod +x /usr/bin/nexusctl
+chmod +x /usr/lib/nexusctl/main.py
+
+exit 0

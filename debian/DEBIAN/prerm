@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+# Stop and disable service
+systemctl stop nexusctl.service || true
+systemctl disable nexusctl.service || true
+
+# Remove autostart entry
+rm -f /etc/xdg/autostart/nexusctl.desktop
+
+# Clean up virtual environment
+rm -rf /opt/nexusctl
+
+exit 0

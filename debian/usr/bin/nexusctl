@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Don't allow running as root
+if [ "$(id -u)" -eq 0 ]; then
+    echo "Error: This application should not be run as root"
+    exit 1
+fi
+
+# Create user directory if it doesn't exist
+mkdir -p ~/.local/share/nexusctl
+
+# Ensure dbus session is available
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval $(dbus-launch --sh-syntax)
+fi
+
+# Debug information
+echo "Environment:"
+echo "DISPLAY=$DISPLAY"
+echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+echo "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR"
+
+# Use the virtual environment's Python
+export VIRTUAL_ENV=/opt/nexusctl/venv
+export PATH="/opt/nexusctl/venv/bin:$PATH"
+export PYTHONPATH=/usr/lib/nexusctl:$PYTHONPATH
+export GI_TYPELIB_PATH=/usr/lib/girepository-1.0:$GI_TYPELIB_PATH
+export QT_DEBUG_PLUGINS=1
+
+# Run the application
+$VIRTUAL_ENV/bin/python3 /usr/lib/nexusctl/main.py "$@" 2>&1 | tee ~/.local/share/nexusctl/debug.log

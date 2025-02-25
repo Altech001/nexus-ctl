@@ -1,0 +1,83 @@
+name: nexusctl
+base: core22
+version: '1.0'
+summary: Nexus Control System
+description: |
+  A powerful system control and management tool for Linux.
+  Built with Python and modern technologies.
+
+grade: stable
+confinement: devmode
+assumes:
+  - network-manager
+
+apps:
+  nexusctl:
+    command: bin/nexusctl
+    daemon: simple
+    restart-condition: always
+    plugs:
+      - network
+      - network-bind
+      - desktop
+      - x11
+      - wayland
+      - home
+      - audio-playback
+      - system-observe
+      - hardware-observe
+      - network-observe
+      - network-manager
+      - desktop-legacy
+      - unity7
+      - gsettings
+    environment:
+      SNAPCRAFT_NETWORK_WAIT: "true"
+      SNAPCRAFT_NETWORK_WAIT_TIMEOUT: "60"
+      PYTHONPATH: $SNAP/lib/python3.10/site-packages:$PYTHONPATH
+      LD_LIBRARY_PATH: $SNAP/usr/lib:$LD_LIBRARY_PATH
+      PATH: $SNAP/usr/bin:$PATH
+
+parts:
+  nexusctl:
+    plugin: python
+    source: .
+    python-version: python3
+    build-environment:
+      - PATH: /snap/bin:$PATH
+    stage-packages:
+      - python3-tk
+      - python3-pip
+      - python3-gi
+      - gir1.2-gtk-3.0
+      - gir1.2-appindicator3-0.1
+      - gir1.2-notify-0.7
+      - libnotify-bin
+    python-packages:
+      - PyQt5
+      - notify2
+      - certifi
+      - charset-normalizer
+      - customtkinter
+      - darkdetect
+      - idna
+      - Markdown
+      - markdown2
+      - packaging
+      - pillow
+      - psutil
+      - pycairo
+      - PyGObject
+      - pytesseract
+      - python-dotenv
+      - requests
+      - urllib3
+    override-build: |
+      craftctl default
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      echo '#!/bin/bash' > $CRAFT_PART_INSTALL/bin/nexusctl
+      echo 'export PYTHONPATH=$SNAP/lib/python3.10/site-packages:$PYTHONPATH' >> $CRAFT_PART_INSTALL/bin/nexusctl
+      echo 'export GI_TYPELIB_PATH=$SNAP/usr/lib/girepository-1.0' >> $CRAFT_PART_INSTALL/bin/nexusctl
+      echo 'export LD_LIBRARY_PATH=$SNAP/usr/lib:$LD_LIBRARY_PATH' >> $CRAFT_PART_INSTALL/bin/nexusctl
+      echo 'python3 $SNAP/main.py "$@"' >> $CRAFT_PART_INSTALL/bin/nexusctl
+      chmod +x $CRAFT_PART_INSTALL/bin/nexusctl 

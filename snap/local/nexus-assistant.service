@@ -1,0 +1,14 @@
+[Unit]
+Description=Nexus Control Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/snap/bin/nexusctl
+
+[Install]
+WantedBy=multi-user.target 

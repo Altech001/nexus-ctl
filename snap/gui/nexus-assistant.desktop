@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Nexus Control
+Comment=System Control and Management Tool
+Exec=nexusctl
+Icon=${SNAP}/meta/gui/icon.png
+Terminal=false
+Type=Application
+Categories=Utility; 
