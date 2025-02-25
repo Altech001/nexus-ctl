@@ -1,0 +1,43 @@
+name: Snapcraft Build and Publish
+
+on:
+  push:
+    branches:
+      - main  # Change this if your default branch is different
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Snapcraft
+        uses: snapcore/action-snapcraft@v1
+
+      - name: Build Snap
+        run: snapcraft
+
+      - name: Upload Snap Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-snap
+          path: "*.snap"
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Snapcraft
+        uses: snapcore/action-snapcraft@v1
+
+      - name: Log in to Snapcraft
+        run: echo "${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}" | snapcraft login --with -
+
+      - name: Build and Publish Snap
+        run: snapcraft upload --release=edge
