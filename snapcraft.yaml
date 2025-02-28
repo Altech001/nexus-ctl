@@ -1,4 +1,4 @@
-name: nexus-ctl
+name: nexusctl
 base: core22  # ✅ Keep core22
 version: '1.0'  # Update with your version
 summary: Nexus AI Bot  
